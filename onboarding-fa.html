@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitsho Start Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Lalezar&family=Vazirmatn:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0C09;
+    --surface:#16130D;
+    --surface-2:#1E1A12;
+    --border:#2C271D;
+    --border-soft:#221E16;
+    --amber:#FFB020;
+    --amber-soft:#FFC75A;
+    --amber-dim:#7A5612;
+    --ink:#F3ECDD;
+    --muted:#988D7C;
+    --muted-2:#6A6253;
+    --warn:#FF8A4C;
+    --ok:#A8DB6E;
+    --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Barlow Semi Condensed',system-ui,sans-serif;
+    font-size:17px;
+    line-height:1.45;
+    min-height:100dvh;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--amber);color:#000}
+
+  /* shell */
+  .wrap{max-width:560px;margin:0 auto;padding:0 18px 140px}
+  header.top{
+    position:sticky;top:0;z-index:20;
+    background:linear-gradient(var(--bg) 72%,transparent);
+    padding:18px 18px 14px;max-width:560px;margin:0 auto;
+  }
+  .brand{display:flex;align-items:center;gap:9px;margin-bottom:14px}
+  .mark{
+    font-family:'Anton',sans-serif;letter-spacing:.5px;
+    font-size:21px;line-height:1;text-transform:uppercase;
+  }
+  .mark b{color:var(--amber)}
+  .mark span{color:var(--ink)}
+  .tag{
+    font-size:11px;letter-spacing:2.5px;text-transform:uppercase;
+    color:var(--muted-2);margin-left:auto;font-weight:600;
+  }
+
+  /* progress rail */
+  .rail{display:flex;gap:5px}
+  .seg{flex:1;height:4px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+  .seg i{display:block;height:100%;width:0;background:var(--amber);
+    transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .seg.done i{width:100%}
+  .seg.active i{width:100%;background:linear-gradient(90deg,var(--amber),var(--amber-soft))}
+  .stepmeta{display:flex;justify-content:space-between;align-items:baseline;margin-top:11px}
+  .stepmeta .n{font-family:'Anton',sans-serif;font-size:13px;letter-spacing:1px;color:var(--amber)}
+  .stepmeta .label{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+
+  /* steps */
+  .step{display:none;animation:rise .4s ease both}
+  .step.show{display:block}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .chips.shake,.yn.shake{animation:shake .3s}
+  @media (prefers-reduced-motion:reduce){
+    .step,.seg i{animation:none;transition:none}
+  }
+
+  .head{margin:22px 0 6px}
+  .kicker{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:8px}
+  h1{
+    font-family:'Anton',sans-serif;font-weight:400;
+    font-size:clamp(30px,8vw,40px);line-height:.98;
+    text-transform:uppercase;letter-spacing:.5px;
+  }
+  .sub{color:var(--muted);font-size:15.5px;margin-top:10px;max-width:42ch}
+
+  /* fields */
+  .field{margin-top:22px}
+  .field > label,.qlabel{
+    display:block;font-weight:600;font-size:15px;margin-bottom:9px;
+  }
+  .opt{color:var(--muted-2);font-weight:500;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-left:6px}
+  .hint{color:var(--muted);font-size:13.5px;margin:-3px 0 9px;line-height:1.35}
+
+  input[type=text],input[type=number],textarea,.txt{
+    width:100%;background:var(--surface);border:1px solid var(--border);
+    color:var(--ink);font-family:inherit;font-size:16.5px;
+    padding:13px 14px;border-radius:11px;outline:none;transition:border-color .15s,background .15s;
+  }
+  textarea{resize:vertical;min-height:78px;line-height:1.4}
+  input:focus,textarea:focus{border-color:var(--amber);background:var(--surface-2)}
+  input::placeholder,textarea::placeholder{color:var(--muted-2)}
+  .row{display:flex;gap:10px}
+  .row > *{flex:1}
+
+  /* chips */
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{
+    background:var(--surface);border:1px solid var(--border);
+    color:var(--ink);font-family:inherit;font-size:15px;font-weight:500;
+    padding:10px 14px;border-radius:99px;cursor:pointer;
+    transition:all .15s;user-select:none;line-height:1.1;
+  }
+  .chip:hover{border-color:var(--amber-dim)}
+  .chip.active{
+    background:var(--amber);border-color:var(--amber);color:#1a1205;font-weight:600;
+  }
+  .chip:focus-visible{outline:2px solid var(--amber-soft);outline-offset:2px}
+
+  /* slider */
+  .slider{margin-top:4px}
+  .slabels{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;
+    background:var(--surface-2);border-radius:99px;outline:none}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:26px;height:26px;border-radius:50%;background:var(--amber);
+    border:4px solid var(--bg);box-shadow:0 0 0 1px var(--amber);cursor:pointer}
+  input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;
+    background:var(--amber);border:4px solid var(--bg);cursor:pointer}
+  .sval{text-align:center;font-family:'Anton',sans-serif;font-size:22px;color:var(--amber);margin-top:10px}
+
+  /* yes/no toggle */
+  .yn{display:flex;gap:8px}
+  .yn .chip{flex:0 0 auto;min-width:74px;text-align:center}
+  .screen-q{
+    background:var(--surface);border:1px solid var(--border-soft);border-radius:12px;
+    padding:14px;margin-top:10px;display:flex;flex-direction:column;gap:11px;
+  }
+  .screen-q .q{font-size:15px;font-weight:500;line-height:1.35}
+
+  .note{
+    border-left:3px solid var(--amber);background:var(--surface);
+    padding:12px 14px;border-radius:0 10px 10px 0;margin-top:18px;
+    font-size:14px;color:var(--muted);line-height:1.45;
+  }
+  .note b{color:var(--ink);font-weight:600}
+
+  /* required-field validation */
+  input.invalid,textarea.invalid{border-color:var(--warn);background:rgba(255,138,76,.06)}
+  .chips.invalid,.yn.invalid{outline:1px dashed var(--warn);outline-offset:7px;border-radius:8px}
+  .err{color:var(--warn);font-size:13.5px;font-weight:500;margin-top:8px;display:flex;align-items:center;gap:6px}
+  .err::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--warn);flex:0 0 5px}
+
+  /* consent */
+  .consent{
+    display:flex;gap:12px;align-items:flex-start;margin-top:20px;
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:15px;cursor:pointer;
+  }
+  .consent.checked{border-color:var(--amber)}
+  .box{flex:0 0 24px;height:24px;border:2px solid var(--muted-2);border-radius:7px;
+    display:grid;place-items:center;margin-top:1px;transition:.15s}
+  .consent.checked .box{background:var(--amber);border-color:var(--amber)}
+  .box svg{width:14px;height:14px;opacity:0;transition:.15s}
+  .consent.checked .box svg{opacity:1}
+  .consent .ctxt{font-size:14px;color:var(--muted);line-height:1.45}
+  .consent .ctxt b{color:var(--ink);font-weight:600}
+
+  /* footer nav */
+  .nav{
+    position:fixed;bottom:0;left:0;right:0;z-index:25;
+    background:linear-gradient(transparent,var(--bg) 38%);
+    padding:26px 18px 22px;
+  }
+  .navin{max-width:560px;margin:0 auto;display:flex;gap:12px}
+  .btn{
+    font-family:'Barlow Semi Condensed',sans-serif;font-weight:600;font-size:16px;
+    border:none;border-radius:12px;padding:15px 20px;cursor:pointer;transition:.15s;
+    letter-spacing:.3px;
+  }
+  .btn.back{background:var(--surface-2);color:var(--muted);border:1px solid var(--border);flex:0 0 auto}
+  .btn.back:hover{color:var(--ink)}
+  .btn.back[disabled]{opacity:.35;pointer-events:none}
+  .btn.next{flex:1;background:var(--amber);color:#1a1205;
+    display:flex;align-items:center;justify-content:center;gap:8px}
+  .btn.next:hover{background:var(--amber-soft)}
+  .btn.next svg{width:18px;height:18px}
+
+  /* done screen */
+  .done{display:none;text-align:center;padding:40px 0 0}
+  .done.show{display:block;animation:rise .5s ease both}
+  .done .big{font-family:'Anton',sans-serif;font-size:clamp(40px,12vw,64px);line-height:.95;text-transform:uppercase}
+  .done .big em{color:var(--amber);font-style:normal}
+  .done p{color:var(--muted);margin-top:14px;font-size:16px}
+  .flag{
+    border:1px solid var(--warn);background:rgba(255,138,76,.08);color:#FFD0B5;
+    border-radius:12px;padding:14px;margin:22px 0;font-size:14px;line-height:1.45;text-align:left;
+  }
+  .flag b{color:var(--warn)}
+  .summary{
+    text-align:left;background:var(--surface);border:1px solid var(--border);
+    border-radius:12px;padding:6px 16px;margin-top:8px;
+  }
+  .summary .grp{padding:14px 0;border-bottom:1px solid var(--border-soft)}
+  .summary .grp:last-child{border:none}
+  .summary .gt{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--amber);font-weight:600;margin-bottom:8px}
+  .summary .kv{display:flex;gap:10px;font-size:14.5px;padding:2px 0}
+  .summary .k{color:var(--muted);flex:0 0 38%}
+  .summary .v{color:var(--ink);flex:1}
+  .copybtn{margin-top:20px;width:100%;background:var(--amber);color:#1a1205}
+  .copybtn.ok{background:var(--ok);color:#14210a}
+
+  .prescription{
+    text-align:left;background:var(--surface);border:1px solid var(--border);
+    border-left:3px solid var(--amber);border-radius:0 12px 12px 0;
+    padding:16px 18px;margin:24px 0 20px;font-size:15.5px;line-height:1.5;color:var(--ink);
+  }
+  .prescription b{color:var(--amber)}
+  .bookbtn{display:flex;width:100%;text-decoration:none;margin-top:4px}
+  .copywrap{margin-top:16px}
+  .sendwarn{display:none;border:1px solid var(--warn);background:rgba(255,138,76,.08);color:#FFD0B5;
+    border-radius:11px;padding:12px 14px;margin-top:16px;font-size:14px;line-height:1.4;text-align:left}
+  .copylink{color:var(--muted-2);font-size:13.5px;text-decoration:underline;cursor:pointer}
+  .copylink:hover{color:var(--muted)}
+  .copylink.ok{color:var(--ok)}
+  .sumwrap{margin-top:22px;text-align:left}
+  .sumwrap summary{color:var(--muted);font-size:14px;cursor:pointer;padding:9px 0;list-style:none}
+  .sumwrap summary::-webkit-details-marker{display:none}
+  .sumwrap summary::before{content:"▸  ";color:var(--amber)}
+  .sumwrap[open] summary::before{content:"▾  "}
+  /* Farsi */
+  body{font-family:'Vazirmatn',system-ui,sans-serif}
+  h1,.done .big{font-family:'Lalezar',sans-serif;text-transform:none;letter-spacing:0}
+  #next svg{transform:scaleX(-1)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <div class="mark"><b>FITSHO</b> <span>START MAP</span></div>
+    <div class="tag" id="tag">با علی</div>
+  </div>
+  <div class="rail" id="rail"></div>
+  <div class="stepmeta">
+    <span class="n" id="metan">01 / 07</span>
+    <span class="label" id="metal">You</span>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- STEP 1 — YOU -->
+  <section class="step show" data-label="شما">
+    <div class="head">
+      <div class="kicker">بیا از خودت شروع کنیم</div>
+      <h1>از هدفت،<br></h1>
+      <p class="sub">اینجا جواب بد وجود نداره. برنامه رو دور زندگی واقعی‌ات می‌سازم — هرچی صادق‌تر باشی، بهتر جواب می‌ده.</p>
+    </div>
+
+    <div class="field">
+      <label>اسمت</label>
+      <input type="text" data-key="Name" data-required placeholder="چی صدات کنم؟">
+    </div>
+
+    <div class="field">
+      <div class="row">
+        <div><label>سن</label><input type="number" data-key="Age" data-required placeholder="37" inputmode="numeric"></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>بهترین راه ارتباط با تو</label>
+      <p class="hint">ایمیل بهتره — یا آیدی اینستاگرام / شماره. برنامه‌ات رو از همین راه می‌فرستم.</p>
+      <input type="text" data-key="Contact" data-required placeholder="you@email.com یا @yourhandle">
+    </div>
+
+    <div class="field">
+      <span class="qlabel">هدف اصلی‌ات الان چیه؟</span>
+      <div class="chips" data-select="single" data-key="Main goal" data-required>
+        <div class="chip">کاهش چربی</div><div class="chip">عضله‌سازی</div>
+        <div class="chip">قدرت</div><div class="chip">فرم و تناسب</div>
+        <div class="chip">سلامتی و انرژی</div><div class="chip">اصلاح فرم / درد کمتر</div>
+        <div class="chip">اعتمادبه‌نفس</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">چقدر فوری به نظر می‌رسه؟</span>
+      <div class="slider">
+        <div class="slabels"><span>یه روزی</span><span>همین حالا</span></div>
+        <input type="range" min="1" max="5" value="3" data-key="Urgency">
+        <div class="sval"><span data-out>3</span> / 5</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>وقتی جواب داد، اولین کاری که می‌کنی و الان نمی‌تونی چیه؟</label>
+      <p class="hint">دقیق باش — هدف واقعی ما همینه.</p>
+      <textarea data-key="First win" placeholder="دقیق باش. یه خط کافیه."></textarea>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">و رک بگو — معمولاً چی استمرارت رو خراب می‌کنه؟ <span class="opt">۲ مورد</span></span>
+      <div class="chips" data-select="multi" data-max="2" data-key="Blockers" data-required>
+        <div class="chip">نبود وقت</div><div class="chip">استرس</div>
+        <div class="chip">ساعات کاری</div><div class="chip">خانواده / دورهمی</div>
+        <div class="chip">بی‌انگیزگی</div><div class="chip">پرخوری احساسی</div>
+        <div class="chip">نمی‌دونم چی بخورم</div><div class="chip">درد / آسیب</div>
+        <div class="chip">اضطراب باشگاه</div><div class="chip">پرخوری آخر هفته</div>
+        <div class="chip">همه‌یا‌هیچ</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 2 — BODY -->
+  <section class="step" data-label="بدن">
+    <div class="head">
+      <div class="kicker">بدنت، همین حالا</div>
+      <h1>یه عکس لحظه‌ای،<br>نه قضاوت</h1>
+      <p class="sub">یه نقطه‌ی شروع تا پیشرفت واقعی رو دنبال کنیم. اندازه‌ها اختیاری‌ان — هرکدوم رو نداری رد کن.</p>
+    </div>
+
+    <div class="field">
+      <div class="row">
+        <div><label>قد <span class="opt">cm</span></label><input type="text" data-key="Height" data-required inputmode="decimal" placeholder="178"></div>
+        <div><label>وزن <span class="opt">kg</span></label><input type="text" data-key="Weight" data-required inputmode="decimal" placeholder="82"></div>
+      </div>
+      <p class="hint">اول صبح وزن کن، بعد دستشویی، قبل از خوردن یا نوشیدن — این پایدارترین عدده و همینو مقایسه می‌کنم.</p>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">اندازه‌ها <span class="opt">اختیاری</span></span>
+      <p class="hint" style="color:var(--ink)">دو دقیقه ارزش داره. ترازو توی هفته‌های عضله‌سازی دروغ می‌گه — اینا نه. وقتی عدد قفل می‌کنه، با همینا واقعاً پیشرفت رو <em>می‌بینیم</em>. حتی فقط دور کمرت کلی چیز بهم می‌گه.</p>
+      <div class="row">
+        <div><input type="text" data-key="Waist" placeholder="دور کمر (cm)"></div>
+        <div><input type="text" data-key="Hip" placeholder="دور باسن (cm)"></div>
+        <div><input type="text" data-key="Chest" placeholder="دور سینه (cm)"></div>
+      </div>
+      <p class="hint" style="margin-top:9px"><b style="color:var(--ink)">جای اندازه‌گیری</b> &nbsp;·&nbsp; <b style="color:var(--ink)">دور کمر:</b> دور ناف، ریلکس — تو نده &nbsp;·&nbsp; <b style="color:var(--ink)">دور باسن:</b> دور پهن‌ترین قسمت باسن &nbsp;·&nbsp; <b style="color:var(--ink)">دور سینه:</b> دور پُرترین قسمت، دست‌ها پایین. متر رو نه شُل نه سفت نگه دار.</p>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">هر چند وقت پیشرفت رو بررسی کنیم؟</span>
+      <div class="chips" data-select="single" data-key="Check-in">
+        <div class="chip">هفتگی</div><div class="chip">هر ۲ هفته</div>
+        <div class="chip">ماهانه</div><div class="chip">کمتر درگیر عدد</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3 — SAFETY -->
+  <section class="step" data-label="ایمنی">
+    <div class="head">
+      <div class="kicker">بررسی سریع ایمنی</div>
+      <h1>تا با خیال راحت<br>تمرینت بدم</h1>
+      <p class="sub">یه غربالگری کوتاه بر اساس PAR-Q+ استاندارد. فقط مشخص می‌کنه قبل از فشار سنگین لازمه با پزشک مشورت کنی یا نه.</p>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">درد یا محدودیت حرکتی فعلی داری؟</span>
+      <input type="text" data-key="Current pain" data-required placeholder="توضیح بده، یا بنویس «ندارم»">
+    </div>
+
+    <div class="field">
+      <span class="qlabel">تا حالا کدوم‌یک رو داشتی؟ <span class="opt">تا ۲ مورد</span></span>
+      <div class="chips" data-select="multi" data-max="2" data-key="History">
+        <div class="chip">کمر</div><div class="chip">گردن / شانه</div>
+        <div class="chip">زانو</div><div class="chip">لگن</div>
+        <div class="chip">مچ پا / پا</div><div class="chip">جراحی</div>
+        <div class="chip">دیسک / فتق</div><div class="chip">هیچ‌کدام</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">بیماری یا دارویی هست که باید بدونم؟</span>
+      <p class="hint">هرچیزی که ضربان قلب، اشتها، انرژی یا وزن رو تحت تأثیر بذاره.</p>
+      <input type="text" data-key="Conditions / meds" data-required placeholder="یا بنویس «ندارم»">
+    </div>
+
+    <div class="field">
+      <span class="qlabel">دو سؤال بله/خیر</span>
+      <div class="screen-q">
+        <div class="q">هنگام ورزش تا حالا درد قفسه‌ی سینه، غش، سرگیجه یا تنگی‌نفس غیرعادی داشتی؟</div>
+        <div class="yn" data-select="single" data-key="Symptoms" data-required data-flag="بله">
+          <div class="chip">خیر</div><div class="chip">بله</div>
+        </div>
+      </div>
+      <div class="screen-q">
+        <div class="q">تا حالا پزشکی بهت گفته ورزش رو محدود یا قطع کنی؟</div>
+        <div class="yn" data-select="single" data-key="Doctor advice" data-required data-flag="بله">
+          <div class="chip">خیر</div><div class="chip">بله</div>
+        </div>
+      </div>
+    </div>
+    <div class="note">اگه جواب هرکدوم <b>بله</b> باشه، قبل از تمرین سنگین یه تأیید پزشکی سریع می‌خوام. مانع نیست — فقط محض احتیاط.</div>
+  </section>
+
+  <!-- STEP 4 — LIFE -->
+  <section class="step" data-label="زندگی">
+    <div class="head">
+      <div class="kicker">هفته‌ات چطور می‌گذره</div>
+      <h1>برنامه‌ها با<br>زندگی واقعی جور می‌شن</h1>
+      <p class="sub">برنامه‌ای که واقعاً انجام می‌دی بهتر از برنامه‌ی بی‌نقصیه که انجام نمی‌دی.</p>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">روز کاری‌ات بیشتر…</span>
+      <div class="chips" data-select="single" data-key="Workday" data-required>
+        <div class="chip">نشسته</div><div class="chip">نشسته و ایستاده</div>
+        <div class="chip">سرپا</div><div class="chip">فعالیت بدنی</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">قدم روزانه، تقریبی؟</span>
+      <div class="chips" data-select="single" data-key="Steps" data-required>
+        <div class="chip">زیر 3k</div><div class="chip">3–6k</div>
+        <div class="chip">6–9k</div><div class="chip">9–12k</div>
+        <div class="chip">12k+</div><div class="chip">نمی‌دونم</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">ساعت/ردیاب داری؟</span>
+      <div class="chips" data-select="single" data-key="Tracker">
+        <div class="chip">هیچ‌کدام</div><div class="chip">Apple Watch</div>
+        <div class="chip">Garmin</div><div class="chip">Fitbit</div>
+        <div class="chip">Samsung</div><div class="chip">Oura / Whoop</div>
+        <div class="chip">ساعت دیگر</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">چند روز در هفته واقعاً می‌تونی تمرین کنی؟</span>
+      <div class="chips" data-select="single" data-key="Training days" data-required>
+        <div class="chip">2</div><div class="chip">3</div>
+        <div class="chip">4</div><div class="chip">5+</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">کجا؟</span>
+      <div class="chips" data-select="single" data-key="Place" data-required>
+        <div class="chip">باشگاه</div><div class="chip">خانه</div>
+        <div class="chip">فضای باز</div><div class="chip">ترکیبی</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">خواب این روزها</span>
+      <div class="slider">
+        <div class="slabels"><span>بد</span><span>عالی</span></div>
+        <input type="range" min="1" max="5" value="3" data-key="Sleep">
+        <div class="sval"><span data-out>3</span> / 5</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">استرس این روزها</span>
+      <div class="slider">
+        <div class="slabels"><span>آروم</span><span>در اوج</span></div>
+        <input type="range" min="1" max="5" value="3" data-key="Stress">
+        <div class="sval"><span data-out>3</span> / 5</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>چیز دیگه‌ای درباره‌ی روتینت؟ <span class="opt">اختیاری</span></label>
+      <p class="hint">پریود، شیفت شب، سفر، غذای بیرون، عادت نوشیدنی، ریزه‌خوری آخر شب — هرچی واقعیه.</p>
+      <textarea data-key="Routine notes" placeholder="یکی دو خط."></textarea>
+    </div>
+  </section>
+
+  <!-- STEP 5 — FOOD -->
+  <section class="step" data-label="غذا">
+    <div class="head">
+      <div class="kicker">واقعاً چطور غذا می‌خوری</div>
+      <h1>الگو،<br>نه دفترچه</h1>
+      <p class="sub">فعلاً به دفترچه‌ی غذا نیاز ندارم — اون هفته‌ی اوله. الان فقط عادت‌های واقعی‌ات رو رک می‌خوام.</p>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">کدوم‌ها شبیه توئه؟ <span class="opt">۲ مورد</span></span>
+      <div class="chips" data-select="multi" data-max="2" data-key="Eating pattern" data-required>
+        <div class="chip">می‌دونم باید چیکار کنم، فقط انجام نمی‌دم</div>
+        <div class="chip">از توصیه‌های متناقض گیجم</div>
+        <div class="chip">برای استرس / آرامش می‌خورم</div>
+        <div class="chip">وقت آشپزی ندارم</div>
+        <div class="chip">وعده‌ها رو رد می‌کنم، بعد شام سنگین</div>
+        <div class="chip">ریزه‌خوری آخر شب</div>
+        <div class="chip">بیرون / سرپایی برای کار</div>
+        <div class="chip">پرخور آخر هفته</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">محدودیت غذایی خاصی داری؟ <span class="opt">یکی انتخاب کن</span></span>
+      <p class="hint">یه چیز دقیق‌تر — بدون گوشت قرمز، یه عدم‌تحمل؟ نزدیک‌ترین رو انتخاب کن و جزئیاتش رو توی کادر آخر بنویس.</p>
+      <div class="chips" data-select="single" data-key="Dietary requirement" data-required>
+        <div class="chip">هیچ‌کدام</div><div class="chip">گیاه‌خوار</div>
+        <div class="chip">ماهی‌خوار</div><div class="chip">وگان</div>
+        <div class="chip">حلال</div><div class="chip">سایر</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">حساسیت یا عدم‌تحمل غذایی؟ <span class="opt">تا ۲ مورد</span></span>
+      <div class="chips" data-select="multi" data-max="2" data-key="Allergies" data-required>
+        <div class="chip">هیچ‌کدام</div><div class="chip">لاکتوز</div>
+        <div class="chip">گلوتن</div><div class="chip">آجیل</div>
+        <div class="chip">تخم‌مرغ</div><div class="chip">غذای دریایی</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">هر چند وقت بیرون می‌خوری یا سفارش می‌دی؟</span>
+      <div class="chips" data-select="single" data-key="Eating out" data-required>
+        <div class="chip">به‌ندرت</div><div class="chip">۱–۲ بار در هفته</div>
+        <div class="chip">۳–۴ بار در هفته</div><div class="chip">بیشتر روزها</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>چیز دیگه‌ای درباره‌ی تغذیه‌ات؟ <span class="opt">اختیاری</span></label>
+      <textarea data-key="Food notes" placeholder="بدون گوشت قرمز، یه عدم‌تحمل، غذایی که حاضر نیستی کنار بذاری — هرچی واقعیه."></textarea>
+    </div>
+  </section>
+
+  <!-- STEP 6 — MIND -->
+  <section class="step" data-label="ذهن">
+    <div class="head">
+      <div class="kicker">ذهنت چطور کار می‌کنه</div>
+      <h1>اینجاست که<br>برنامه‌ها زنده می‌مونن یا می‌میرن</h1>
+      <p class="sub">وقتی الگوت رو بدونم، می‌تونم برنامه رو موافقش بسازم نه برخلافش.</p>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">چطور دوست داری کوچ بشی؟ <span class="opt">۲ مورد</span></span>
+      <div class="chips" data-select="multi" data-max="2" data-key="Coaching style">
+        <div class="chip">ملایم و حمایتگر</div><div class="chip">مستقیم و صادق</div>
+        <div class="chip">خیلی ساختارمند</div><div class="chip">منعطف و واقع‌بین</div>
+        <div class="chip">پیگیری و مسئولیت</div><div class="chip">دلیلش رو توضیح بده</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">چقدر ثبت‌وپیگیری بهت می‌خوره؟ <span class="opt">هرچی خواستی</span></span>
+      <div class="chips" data-select="multi" data-key="Tracking level">
+        <div class="chip">فقط عادت‌ها</div><div class="chip">وزن + قدم</div>
+        <div class="chip">ماکروی کامل</div><div class="chip">هنوز مطمئن نیستم</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">برنامه‌ای که واقعاً بهش پایبند می‌مونی…</span>
+      <div class="chips" data-select="single" data-key="Plan type">
+        <div class="chip">ساده و تکرارشونده</div><div class="chip">منعطف با گزینه‌ها</div>
+        <div class="chip">دقیق و ساختارمند</div><div class="chip">کمکم کن تصمیم بگیرم</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="qlabel">چقدر آماده‌ای این ماه خودت رو اولویت بذاری؟</span>
+      <div class="slider">
+        <div class="slabels"><span>محتاطانه</span><span>تمام‌قد</span></div>
+        <input type="range" min="1" max="10" value="7" data-key="Readiness">
+        <div class="sval"><span data-out>7</span> / 10</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>یه چیز که باید قبل از شروع درباره‌ات بدونم</label>
+      <textarea data-key="One thing" placeholder="هرچی. این فقط بین خودمونه."></textarea>
+    </div>
+  </section>
+
+  <!-- STEP 7 — CONSENT -->
+  <section class="step" data-label="پایان">
+    <div class="head">
+      <div class="kicker">آخرین بخش</div>
+      <h1>داده‌ی تو،<br>تصمیم تو</h1>
+    </div>
+
+    <div class="note" style="margin-top:18px">
+      <b>چی جمع می‌کنم و چرا.</b> هدف‌ها، روتین، و پاسخ‌های غذایی و سلامتی‌ات فقط برای ساختن و تنظیم برنامه‌ی کوچینگ استفاده می‌شه. اطلاعات سلامتی و بدنی داده‌ی حساسه — فقط چیزی که لازمه نگه می‌دارم، هرگز به اشتراک نمی‌ذارم یا نمی‌فروشم، و هر وقت بخوای حذفش می‌کنم.<br><br>
+      مسئول داده: <b>Ali Mehmandoostkotlar &mdash; Fitsho with Ali</b>، بروکسل، بلژیک. <a href="/privacy.html" target="_blank" rel="noopener" style="color:var(--amber);text-decoration:underline">سیاست کامل حریم خصوصی</a> توضیح می‌ده داده‌ات چطور ذخیره می‌شه و حقوقت طبق GDPR چیه.
+    </div>
+
+    <div class="consent" data-consent>
+      <div class="box"><svg viewBox="0 0 24 24" fill="none" stroke="#1a1205" stroke-width="3.5"><path d="M5 12l4 4L19 7"/></svg></div>
+      <div class="ctxt">
+        <b>موافقم.</b> اجازه می‌دم Fitsho پاسخ‌هام — از جمله اطلاعات سلامتی‌ای که دادم — رو برای ساختن و تنظیم برنامه‌ام پردازش کنه. اطلاعات تا جایی که می‌دونم درسته، و می‌دونم این کوچینگ جایگزین مشاوره، تشخیص یا درمان پزشکی نیست.
+      </div>
+    </div>
+  </section>
+
+  <!-- DONE -->
+  <section class="done" id="done">
+    <div class="big">تو<br><em>روی نقشه‌ای</em></div>
+    <div id="prescription" class="prescription"></div>
+    <div id="flag"></div>
+    <a id="book" class="btn next bookbtn" target="_blank" rel="noopener">زمان‌های خالی علی ←</a>
+    <div id="sendwarn" class="sendwarn">به‌صورت خودکار ارسال نشد — لطفاً پایین رو بزن تا پاسخ‌هات رو کپی کنی و برای علی بفرستی که چیزی گم نشه.</div>
+    <div class="copywrap"><a id="copy" class="copylink">فرم ارسال نشد؟ پاسخ‌هام رو کپی کن</a></div>
+    <details class="sumwrap"><summary>مرور چیزی که فرستادم</summary><div class="summary" id="summary"></div></details>
+  </section>
+
+</main>
+
+<div class="nav" id="navbar">
+  <div class="navin">
+    <button class="btn back" id="back" disabled>قبلی</button>
+    <button class="btn next" id="next">
+      Next
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ▼▼▼ PASTE YOUR FORM BACKEND URL (Basin) BETWEEN THE QUOTES ▼▼▼
+  const ENDPOINT = "https://usebasin.com/f/c4eaa9d469da";
+  // ▼▼▼ PASTE YOUR BOOKING LINK (Calendly etc.) — shown as the final button ▼▼▼
+  const BOOKING_URL = "https://calendly.com/alfitplan/30min";
+  // ▲▲▲ leave either empty to disable that piece ▲▲▲
+
+  // closing line keyed to the client's top blocker
+  const RX = {
+    'نبود وقت': 'وقت محدودیت اصلیه، پس برنامه‌ات حول جلسات کوتاه و پربازده ساخته می‌شه که توی یه هفته‌ی شلوغ دوام بیاره — نه ماراتن‌های ۹۰ دقیقه‌ای.',
+    'استرس': 'استرس اهرم اصلیه. با تمرین و غذا فشار رو کم می‌کنیم نه اینکه اضافه کنیم — این سیستم دقیقاً برای همین ساخته شده.',
+    'ساعات کاری': 'برنامه‌ات مانعه، پس برنامه دور اون می‌چرخه نه اینکه باهاش بجنگه.',
+    'خانواده / دورهمی': 'زندگی اول. برنامه‌ات از پس شام‌های بیرون و آخر هفته‌های شلوغ برمیاد نه اینکه سرشون بریزه.',
+    'بی‌انگیزگی': 'انگیزه میاد و می‌ره، پس به ساختار و پیگیری تکیه می‌کنیم نه به منتظرِ حال‌اومدن.',
+    'پرخوری احساسی': 'روی چراییِ پشت خوردن کار می‌کنیم نه فقط چیِ اون — اول آگاهی، بعد قانون.',
+    'نمی‌دونم چی بخورم': 'دیگه حدس نمی‌زنی. یه روش ساده و تکرارشونده می‌گیری که به مدرک تغذیه نیاز نداره.',
+    'درد / آسیب': 'دور چیزی که درد داره تمرین می‌دیم و قدرت رو با احتیاط می‌سازیم — اول امن، بعد سخت.',
+    'اضطراب باشگاه': 'از جایی که راحتی شروع می‌کنیم و قبل از شدت، اعتمادبه‌نفس می‌سازیم.',
+    'پرخوری آخر هفته': 'آخر هفته‌ها هفته‌ات رو خراب نمی‌کنن — یه الگو می‌سازیم که از جمعه تا یکشنبه پابرجا بمونه.',
+    'همه‌یا‌هیچ': 'چرخه‌ی همه‌یا‌هیچ رو می‌شکنیم. استمرار همیشه از بی‌نقص‌بودن می‌بره.'
+  };
+
+  const steps = [...document.querySelectorAll('.step')];
+  const rail = document.getElementById('rail');
+  const metan = document.getElementById('metan');
+  const metal = document.getElementById('metal');
+  const back = document.getElementById('back');
+  const next = document.getElementById('next');
+  const navbar = document.getElementById('navbar');
+  const done = document.getElementById('done');
+  let i = 0; const faN=x=>String(x).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+
+  // build rail
+  steps.forEach(()=>{ const s=document.createElement('div'); s.className='seg';
+    s.innerHTML='<i></i>'; rail.appendChild(s); });
+  const segs=[...rail.children];
+
+  // chips
+  document.querySelectorAll('.chips,[data-select]').forEach(group=>{
+    if(!group.dataset.select) return;
+    group.querySelectorAll('.chip').forEach(chip=>{
+      chip.tabIndex=0;
+      const fire=()=>{
+        if(group.dataset.select==='single'){
+          group.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+          chip.classList.add('active');
+        } else {
+          if(!chip.classList.contains('active')){
+            const max=parseInt(group.dataset.max||'99',10);
+            if(group.querySelectorAll('.chip.active').length>=max){
+              group.classList.remove('shake'); void group.offsetWidth; group.classList.add('shake'); return;
+            }
+          }
+          chip.classList.toggle('active');
+        }
+        if(group.hasAttribute('data-required') && group.querySelector('.chip.active')) clearErr(group);
+      };
+      chip.addEventListener('click',fire);
+      chip.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();fire();} });
+    });
+  });
+
+  // sliders
+  document.querySelectorAll('input[type=range]').forEach(r=>{
+    const out=r.closest('.slider').querySelector('[data-out]');
+    r.addEventListener('input',()=>out.textContent=r.value);
+  });
+
+  // consent
+  const consent=document.querySelector('[data-consent]');
+  consent.addEventListener('click',()=>consent.classList.toggle('checked'));
+
+  // ---- required-field gating ----
+  function showErr(el,msg){
+    el.classList.add('invalid');
+    let e=el.nextElementSibling;
+    if(!e||!e.classList.contains('err')){
+      e=document.createElement('div'); e.className='err';
+      el.parentNode.insertBefore(e, el.nextSibling);
+    }
+    e.textContent=msg;
+  }
+  function clearErr(el){
+    el.classList.remove('invalid');
+    const e=el.nextElementSibling;
+    if(e&&e.classList.contains('err')) e.remove();
+  }
+  function validateStep(step){
+    let ok=true, first=null;
+    step.querySelectorAll('[data-required]').forEach(el=>{
+      const isInput=el.matches('input,textarea');
+      const valid=isInput ? el.value.trim()!=='' : !!el.querySelector('.chip.active');
+      if(valid){ clearErr(el); }
+      else { showErr(el, isInput?'لطفاً قبل از ادامه این رو پر کن':'حداقل یکی رو انتخاب کن'); ok=false; if(!first)first=el; }
+    });
+    if(first) first.scrollIntoView({behavior:'smooth',block:'center'});
+    return ok;
+  }
+  document.querySelectorAll('input[data-required],textarea[data-required]').forEach(el=>{
+    el.addEventListener('input',()=>{ if(el.value.trim()!=='') clearErr(el); });
+  });
+
+  function render(){
+    steps.forEach((s,n)=>s.classList.toggle('show',n===i));
+    segs.forEach((s,n)=>{ s.classList.toggle('done',n<i); s.classList.toggle('active',n===i); });
+    metan.textContent = faN(String(i+1).padStart(2,'0')+' / '+String(steps.length).padStart(2,'0'));
+    metal.textContent = steps[i].dataset.label;
+    back.disabled = i===0;
+    next.querySelector('path').setAttribute('d', i===steps.length-1 ? 'M5 12l4 4L19 7' : 'M5 12h14M13 6l6 6-6 6');
+    next.childNodes[0].nodeValue = i===steps.length-1 ? 'پایان ' : 'بعدی ';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  next.addEventListener('click',()=>{
+    if(i===steps.length-1){
+      if(!consent.classList.contains('checked')){
+        consent.style.borderColor='var(--warn)';
+        consent.scrollIntoView({behavior:'smooth',block:'center'});
+        return;
+      }
+      finish();
+    } else { if(!validateStep(steps[i])) return; i++; render(); }
+  });
+  back.addEventListener('click',()=>{ if(i>0){i--;render();} });
+
+  // collect + finish
+  function collect(){
+    const data=[];
+    steps.forEach(step=>{
+      const grp={label:step.dataset.label,items:[]};
+      step.querySelectorAll('[data-key]').forEach(el=>{
+        const key=el.dataset.key; let val='';
+        if(el.matches('input[type=text],input[type=number],textarea')) val=el.value.trim();
+        else if(el.matches('input[type=range]')) val=el.value+' / '+el.max;
+        else if(el.dataset.select){
+          const on=[...el.querySelectorAll('.chip.active')].map(c=>c.textContent.trim());
+          val=on.join(', ');
+        }
+        if(val) grp.items.push([key,val]);
+      });
+      if(grp.items.length) data.push(grp);
+    });
+    return data;
+  }
+
+  function flagged(){
+    const f=[];
+    document.querySelectorAll('[data-flag]').forEach(g=>{
+      const on=g.querySelector('.chip.active');
+      if(on && on.textContent.trim()===g.dataset.flag) f.push(g.dataset.key);
+    });
+    return f;
+  }
+
+  function sendFailed(){
+    const w=document.getElementById('sendwarn');
+    if(w) w.style.display='block';
+  }
+
+  function finish(){
+    const data=collect();
+    // flag
+    const flags=flagged();
+    if(flags.length){
+      document.getElementById('flag').innerHTML =
+        '<div class="flag"><b>توجه:</b> بر اساس پاسخ‌های ایمنی‌ات، قبل از هر تمرین سنگین یه تأیید پزشکی سریع از دکتر بگیر. تا اون موقع می‌تونیم ملایم شروع کنیم.</div>';
+    }
+    // summary
+    const sum=document.getElementById('summary');
+    sum.innerHTML=data.map(g=>
+      '<div class="grp"><div class="gt">'+g.label+'</div>'+
+      g.items.map(([k,v])=>'<div class="kv"><span class="k">'+k+'</span><span class="v">'+v.replace(/</g,'&lt;')+'</span></div>').join('')+
+      '</div>'
+    ).join('');
+
+    // dynamic prescription keyed to their top blocker
+    const bEl=document.querySelector('[data-key="Blockers"]');
+    const topBlocker=bEl ? (bEl.querySelector('.chip.active')||{}).textContent : '';
+    const rx=RX[(topBlocker||'').trim()];
+    document.getElementById('prescription').innerHTML = rx
+      ? ('<b>چیزی که همین الان می‌بینم:</b> '+rx+' دارم یه برنامه‌ی شروع دقیقاً حول همین می‌سازم.')
+      : 'هرچی لازم داشتم گرفتم تا برنامه‌ای حول هفته‌ی واقعی‌ات بسازم.';
+
+    // booking button
+    const book=document.getElementById('book');
+    if(BOOKING_URL){ book.href=BOOKING_URL; }
+    else { book.style.display='none'; }
+    // text for copy
+    let txt='FITSHO START MAP — '+(new Date().toLocaleDateString())+'\n';
+    if(flags.length) txt+='\n⚠ MEDICAL CLEARANCE FLAGGED ('+flags.join(', ')+')\n';
+    data.forEach(g=>{ txt+='\n— '+g.label.toUpperCase()+' —\n';
+      g.items.forEach(([k,v])=>txt+=k+': '+v+'\n'); });
+    window.__fitsho=txt;
+
+    // send each answer to your form backend (one row per client)
+    if(ENDPOINT){
+      const fd=new FormData();
+      data.forEach(g=>g.items.forEach(([k,v])=>fd.append(k,v)));
+      fd.append('_submitted', new Date().toISOString());
+      if(flags.length) fd.append('_flag','YES — '+flags.join(', '));
+      fetch(ENDPOINT,{method:'POST',headers:{'Accept':'application/json'},body:fd})
+        .then(r=>{ if(!r.ok) sendFailed(); })
+        .catch(()=>sendFailed());
+    }
+
+    navbar.style.display='none';
+    steps.forEach(s=>s.classList.remove('show'));
+    document.querySelector('.wrap').style.paddingBottom='80px';
+    done.classList.add('show');
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  document.getElementById('copy').addEventListener('click',function(e){
+    e.preventDefault();
+    const btn=this;
+    navigator.clipboard.writeText(window.__fitsho||'').then(()=>{
+      btn.textContent='کپی شد \u2713'; btn.classList.add('ok');
+      setTimeout(()=>{btn.textContent='فرم ارسال نشد؟ پاسخ‌هام رو کپی کن';btn.classList.remove('ok');},2200);
+    }).catch(()=>{ btn.textContent='برای کپی نگه دار'; });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

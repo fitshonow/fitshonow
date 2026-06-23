@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitsho — How to use your plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0C09;--surface:#16130D;--border:#2C271D;
+    --amber:#FFB020;--amber-soft:#FFC75A;--amber-dim:#7A5612;
+    --ink:#F3ECDD;--muted:#988D7C;--muted-2:#6A6253;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#000;color:var(--ink);font-family:'Barlow Semi Condensed',system-ui,sans-serif;
+    min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:18px;gap:14px;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--amber);color:#000}
+
+  .frame{width:100%;max-width:430px;aspect-ratio:4/5;background:var(--bg);border:1px solid var(--border);
+    border-radius:20px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .track{display:flex;height:100%;transition:transform .4s cubic-bezier(.4,0,.2,1)}
+  .slide{min-width:100%;height:100%;padding:38px 32px 30px;display:flex;flex-direction:column}
+  .slide .top{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .kicker{font-size:13px;letter-spacing:3px;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:16px}
+  h1{font-family:'Anton',sans-serif;font-weight:400;text-transform:uppercase;line-height:.95;letter-spacing:.5px}
+  .hero{font-size:clamp(40px,13vw,58px)}
+  .head{font-size:clamp(30px,9vw,42px);margin-bottom:16px}
+  .head em{color:var(--amber);font-style:normal}
+  p{font-size:17px;line-height:1.5;color:var(--muted)}
+  p b,p strong{color:var(--ink);font-weight:600}
+  .amberword{color:var(--amber);font-weight:600}
+  ul{list-style:none;margin-top:6px}
+  li{display:flex;gap:11px;font-size:16.5px;line-height:1.4;color:var(--ink);margin-bottom:13px;align-items:flex-start}
+  li .b{flex:0 0 auto;color:var(--amber);font-weight:700}
+  li .n{flex:0 0 26px;font-family:'Anton',sans-serif;color:var(--amber);font-size:18px;line-height:1}
+  .tabline{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .tabemoji{font-size:24px;flex:0 0 auto}
+  .tabline b{font-size:18px;color:var(--ink)}
+  .tabline span{color:var(--muted);font-size:15px}
+
+  .foot{display:flex;align-items:center;gap:12px;margin-top:18px}
+  .mark{font-family:'Anton',sans-serif;font-size:15px;letter-spacing:.5px;text-transform:uppercase}
+  .ig{color:var(--amber);text-decoration:none;font-weight:600;font-size:13.5px;position:relative;z-index:6}
+  .ig:hover{text-decoration:underline}
+  .mark b{color:var(--amber)}
+  .proof{display:flex;gap:5px;margin-left:auto}
+  .proof i{width:6px;height:6px;border-radius:50%;background:var(--border);display:block}
+  .proof i.on{background:var(--amber)}
+  .hint{color:var(--muted-2);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-top:14px}
+
+  /* nav */
+  .tap{position:absolute;top:0;bottom:0;width:38%;z-index:5;cursor:pointer}
+  .tap.l{left:0}.tap.r{right:0}
+  .dots{display:flex;gap:7px;justify-content:center}
+  .dots i{width:7px;height:7px;border-radius:50%;background:#333;cursor:pointer;transition:.2s}
+  .dots i.on{background:var(--amber);width:20px;border-radius:99px}
+  .meta{color:var(--muted-2);font-size:12px;letter-spacing:2px;text-transform:uppercase;text-align:center}
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="track" id="track">
+
+    <!-- 1 COVER -->
+    <div class="slide">
+      <div class="top">
+        <a class="mark" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener" style="margin-bottom:auto;text-decoration:none;color:inherit;position:relative;z-index:6"><b>FITSHO</b> WITH ALI</a>
+        <h1 class="hero">Your plan<br>is <em style="color:var(--amber)">live</em>.</h1>
+        <p style="margin-top:16px">Here's everything you need to use it — takes about two minutes. Swipe through once and you're set.</p>
+        <div class="hint">swipe to start →</div>
+      </div>
+    </div>
+
+    <!-- 2 LOGIN -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">01 · Getting in</div>
+        <h1 class="head">One link,<br>one <em>PIN</em>.</h1>
+        <p>I've sent you a personal <b>link</b> and a <b>6-digit PIN</b>. Open the link, type your PIN, and you're in.</p>
+        <p style="margin-top:12px"><b>Tip:</b> save the link to your phone's home screen — then it opens like an app, one tap.</p>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 3 TABS -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">02 · Your home</div>
+        <h1 class="head">Three <em>tabs</em>.</h1>
+        <div class="tabline"><span class="tabemoji">🍽</span><div><b>Food</b> &nbsp;<span>your eating plan</span></div></div>
+        <div class="tabline"><span class="tabemoji">🏋</span><div><b>Training</b> &nbsp;<span>your workouts</span></div></div>
+        <div class="tabline"><span class="tabemoji">✅</span><div><b>Today</b> &nbsp;<span>where you log</span></div></div>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 4 FOOD -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">03 · Your food</div>
+        <h1 class="head">Read your <em>plate</em>.</h1>
+        <ul>
+          <li><span class="b">→</span><div>Two day-types: <b>Workout day</b> and <b>Rest day</b>. Use the right one.</div></li>
+          <li><span class="b">→</span><div>Every meal lists the <b>exact food and grams</b>. Tap <span class="amberword">where to buy</span> for the product.</div></li>
+          <li><span class="b">→</span><div><b>Protein is the priority</b> — hit it first, fit the rest around it.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 5 TRAINING -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">04 · Your training</div>
+        <h1 class="head">Read your <em>session</em>.</h1>
+        <ul>
+          <li><span class="b">→</span><div>Each day lists your exercises as <b>sets × reps</b>.</div></li>
+          <li><span class="b">→</span><div><b>RIR</b> = reps in reserve — how many you'd have left. 2 RIR means stop ~2 short of failure.</div></li>
+          <li><span class="b">→</span><div>Not sure how a move looks? Tap <span class="amberword">tutorial</span>. Always <b>warm up 5–10 min</b> first.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 6 LOG WORKOUT -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">05 · After every session</div>
+        <h1 class="head">Log your <em>lifts</em>.</h1>
+        <ul>
+          <li><span class="n">1</span><div>Open <b>Today → Workout</b>.</div></li>
+          <li><span class="n">2</span><div>Tap the <b>day</b> you trained.</div></li>
+          <li><span class="n">3</span><div>For each set, type the <b>weight & reps</b> you actually did.</div></li>
+          <li><span class="n">4</span><div>Hit <span class="amberword">Log workout</span> — do it at the gym, while it's fresh.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 7 LOG DAY -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">06 · Every night</div>
+        <h1 class="head">Log your <em>day</em>.</h1>
+        <p>Open <b>Today → My day</b> and tell me: how eating went, your <b>weight</b>, your <b>sleep</b>, and a note.</p>
+        <p style="margin-top:14px">Takes 30 seconds. You log training and food <b>separately</b> — gym whenever you train, day at night.</p>
+        <p style="margin-top:14px;color:var(--amber-soft)"><b>Honesty beats perfection.</b></p>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 8 RULES -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">07 · The 5 rules</div>
+        <h1 class="head">Make it <em>work</em>.</h1>
+        <ul>
+          <li><span class="n">1</span><div>Weigh in the <b>morning</b>, after the loo, before eating.</div></li>
+          <li><span class="n">2</span><div><b>Log every day</b> — consistency is the whole game.</div></li>
+          <li><span class="n">3</span><div>Be <b>honest</b>. I coach the real data, not the perfect day.</div></li>
+          <li><span class="n">4</span><div><b>Protein first</b>, everything else around it.</div></li>
+          <li><span class="n">5</span><div>Struggling? <b>Leave me a note</b>. That's what I'm here for.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 9 CLOSE -->
+    <div class="slide">
+      <div class="top">
+        <a class="mark" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener" style="margin-bottom:auto;text-decoration:none;color:inherit;position:relative;z-index:6"><b>FITSHO</b> WITH ALI</a>
+        <h1 class="hero">That's<br><em style="color:var(--amber)">it</em>.</h1>
+        <p style="margin-top:16px">Show up and log. I've got the rest — the plan, the tweaks, the accountability.</p>
+        <p style="margin-top:14px;color:var(--ink);font-weight:600">Let's build something. — Ali</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="tap l" id="prev"></div>
+  <div class="tap r" id="next"></div>
+</div>
+
+<div class="dots" id="dots"></div>
+<div class="meta" id="counter">1 / 9</div>
+
+<script>
+(function(){
+  const track=document.getElementById('track');
+  const slides=track.children.length;
+  const dotsWrap=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  let i=0;
+  for(let n=0;n<slides;n++){ const d=document.createElement('i'); d.addEventListener('click',()=>go(n)); dotsWrap.appendChild(d); }
+  const dots=[...dotsWrap.children];
+  function go(n){ i=Math.max(0,Math.min(slides-1,n)); track.style.transform='translateX('+(-i*100)+'%)';
+    dots.forEach((d,x)=>d.classList.toggle('on',x===i)); counter.textContent=(i+1)+' / '+slides; }
+  document.getElementById('next').addEventListener('click',()=>go(i+1));
+  document.getElementById('prev').addEventListener('click',()=>go(i-1));
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight')go(i+1); if(e.key==='ArrowLeft')go(i-1); });
+  let x0=null;
+  track.addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+  track.addEventListener('touchend',e=>{ if(x0===null)return; const dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>40){ go(dx<0?i+1:i-1); } x0=null; });
+  go(0);
+})();
+</script>
+</body>
+</html>
