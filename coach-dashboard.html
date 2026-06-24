@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fitsho — Coach Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0C09;--surface:#16130D;--surface-2:#1E1A12;--border:#2C271D;
+    --amber:#FFB020;--amber-soft:#FFC75A;--amber-dim:#7A5612;
+    --ink:#F3ECDD;--muted:#988D7C;--muted-2:#6A6253;--warn:#FF8A4C;--ok:#A8DB6E;--red:#E8665A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Barlow Semi Condensed',system-ui,sans-serif;font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased;min-height:100dvh}
+  .fa{font-family:'Vazirmatn',sans-serif;direction:rtl;unicode-bidi:plaintext}
+  ::selection{background:var(--amber);color:#000}
+  a{color:var(--amber)}
+
+  /* login */
+  .login{max-width:340px;margin:14vh auto;text-align:center;padding:20px}
+  .logo{font-family:'Anton',sans-serif;font-size:30px;text-transform:uppercase;letter-spacing:.5px}
+  .logo b{color:var(--amber)}
+  .login p{color:var(--muted);margin:6px 0 22px;font-size:14px}
+  .login input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--ink);font-family:inherit;font-size:16px;padding:13px;border-radius:11px;outline:none;text-align:center}
+  .login input:focus{border-color:var(--amber)}
+  .login label{display:flex;gap:8px;align-items:center;justify-content:center;color:var(--muted);font-size:13px;margin-top:12px;cursor:pointer}
+  .btn{background:var(--amber);color:#1a1205;border:none;font-family:inherit;font-weight:600;font-size:15px;padding:12px 18px;border-radius:10px;cursor:pointer}
+  .btn[disabled]{opacity:.5;pointer-events:none}
+  .btn.ghost{background:transparent;border:1px solid var(--border);color:var(--ink)}
+  .login .btn{width:100%;margin-top:16px;padding:14px}
+  .err{color:var(--red);font-size:13px;margin-top:10px;min-height:16px}
+
+  /* shell */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;padding:12px 18px}
+  .topbar .logo{font-size:18px}
+  .tabs{display:flex;gap:6px;margin-inline-start:auto}
+  .tab{background:var(--surface);border:1px solid var(--border);color:var(--muted);font-family:inherit;font-weight:600;font-size:13.5px;padding:8px 14px;border-radius:9px;cursor:pointer}
+  .tab.active{background:var(--amber);border-color:var(--amber);color:#1a1205}
+  .tab .n{font-size:11px;opacity:.7;margin-inline-start:4px}
+  .out{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:inherit;font-size:13px;padding:8px 12px;border-radius:9px;cursor:pointer}
+  .wrap{padding:18px}
+  .panel{display:none}.panel.show{display:block}
+
+  .toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+  .toolbar input[type=search],.toolbar select{background:var(--surface);border:1px solid var(--border);color:var(--ink);font-family:inherit;font-size:14px;padding:9px 12px;border-radius:9px;outline:none}
+  .toolbar input[type=search]{min-width:220px}
+  .toolbar input:focus,.toolbar select:focus{border-color:var(--amber)}
+  .chiptog{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px;cursor:pointer;user-select:none;background:var(--surface);border:1px solid var(--border);padding:8px 12px;border-radius:9px}
+  .chiptog.on{border-color:var(--amber);color:var(--amber)}
+  .count{color:var(--muted-2);font-size:13px;margin-inline-start:auto}
+
+  .tablewrap{overflow:auto;border:1px solid var(--border);border-radius:12px;max-height:74vh}
+  table{border-collapse:collapse;width:100%;font-size:13.5px}
+  thead th{position:sticky;top:0;background:var(--surface-2);color:var(--amber);font-family:'Anton',sans-serif;font-weight:400;font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;text-align:start;padding:9px 11px;white-space:nowrap;border-bottom:1px solid var(--border);z-index:2}
+  tbody td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:top;max-width:280px}
+  tbody tr:hover{background:var(--surface)}
+  tbody tr.click{cursor:pointer}
+  .flag{color:var(--red);font-weight:700}
+  .pill{display:inline-block;background:var(--surface-2);border:1px solid var(--border);border-radius:99px;padding:1px 8px;font-size:12px;color:var(--muted)}
+  .mono{font-family:ui-monospace,monospace;font-size:12.5px}
+  .copy{background:var(--surface-2);border:1px solid var(--border);color:var(--amber);font-family:inherit;font-size:12px;padding:3px 9px;border-radius:7px;cursor:pointer}
+  .copy.done{color:var(--ok);border-color:var(--ok)}
+  .empty{color:var(--muted-2);text-align:center;padding:50px 20px}
+  .kind{font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;padding:2px 7px;border-radius:6px}
+  .kind.workout{background:rgba(255,176,32,.13);color:var(--amber-soft)}
+  .kind.day{background:rgba(168,219,110,.13);color:var(--ok)}
+
+  /* modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;z-index:40;overflow:auto}
+  .overlay.show{display:flex}
+  .modal{background:var(--bg);border:1px solid var(--border);border-radius:16px;max-width:640px;width:100%;padding:22px}
+  .modal h2{font-family:'Anton',sans-serif;font-weight:400;font-size:24px;text-transform:uppercase}
+  .modal .meta{color:var(--muted);font-size:13px;margin:4px 0 16px}
+  .qgroup{margin-bottom:16px}
+  .qgroup h3{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+  .qa{display:flex;gap:12px;padding:6px 0;border-bottom:1px solid var(--border)}
+  .qa .q{flex:0 0 150px;color:var(--muted);font-size:13px}
+  .qa .a{flex:1;font-weight:500}
+  .modal .x{float:right;background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;line-height:1}
+  .spark{display:block;margin-top:6px}
+  .sub{color:var(--muted);font-size:13px;line-height:1.5}
+  h1.big{font-family:'Anton',sans-serif;font-weight:400;font-size:22px;text-transform:uppercase;margin-bottom:3px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login" class="login">
+  <div class="logo"><b>FITSHO</b> COACH</div>
+  <p>Your private dashboard.</p>
+  <input id="pass" type="password" placeholder="Coach password" autocomplete="current-password">
+  <label><input type="checkbox" id="remember" checked> Remember on this device</label>
+  <button class="btn" id="go">Open dashboard →</button>
+  <div class="err" id="err"></div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div class="logo"><b>FITSHO</b> COACH</div>
+    <div class="tabs">
+      <button class="tab active" data-p="leads">Leads <span class="n" id="nLeads"></span></button>
+      <button class="tab" data-p="clients">Clients <span class="n" id="nClients"></span></button>
+      <button class="tab" data-p="checkins">Check-ins <span class="n" id="nLogs"></span></button>
+    </div>
+    <button class="out" id="logout">Log out</button>
+  </div>
+
+  <div class="wrap">
+    <!-- LEADS -->
+    <div class="panel show" id="panel-leads">
+      <div class="toolbar">
+        <input type="search" id="leadSearch" placeholder="Search leads…">
+        <div class="chiptog" id="flagOnly">⚠ Flagged only</div>
+        <button class="btn ghost" id="exportLeads">⬇ Download CSV (Excel-ready)</button>
+        <span class="count" id="leadCount"></span>
+      </div>
+      <div class="tablewrap"><table id="leadTable"></table></div>
+    </div>
+
+    <!-- CLIENTS -->
+    <div class="panel" id="panel-clients">
+      <div class="toolbar"><input type="search" id="clientSearch" placeholder="Search clients…"><span class="count" id="clientCount"></span></div>
+      <div class="tablewrap"><table id="clientTable"></table></div>
+    </div>
+
+    <!-- CHECK-INS -->
+    <div class="panel" id="panel-checkins">
+      <div class="toolbar">
+        <select id="logClient"><option value="">All clients</option></select>
+        <select id="logKind"><option value="">All types</option><option value="workout">Workouts</option><option value="day">Daily check-ins</option></select>
+        <span class="count" id="logCount"></span>
+      </div>
+      <div class="tablewrap"><table id="logTable"></table></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+
+<script>
+(function(){
+  // ▼▼ CONFIG ▼▼
+  const SUPABASE_URL  = "";   // Supabase ▸ Settings ▸ API ▸ Project URL
+  const SUPABASE_KEY  = "";   // anon / publishable key (safe here — data is password-gated)
+  const PORTAL_URL    = "https://fitshonow.vercel.app/client.html";  // your deployed client portal
+  // ▲▲ CONFIG ▲▲
+
+  const $=id=>document.getElementById(id);
+  const LS='fitsho_coach';
+  let PASS='', intake=[], logs=[], clients=[], leadCols=[];
+  const H=()=>({apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'});
+  const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const isFa=s=>/[\u0600-\u06FF]/.test(String(s||''));
+  const fcell=s=>{const t=esc(s); return isFa(s)?'<span class="fa">'+t+'</span>':t;};
+
+  function rpc(fn,extra){ return fetch(SUPABASE_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:H(),body:JSON.stringify(Object.assign({p_pass:PASS},extra||{}))}).then(r=>r.json()); }
+
+  // ---------- LOGIN ----------
+  let saved=''; try{ saved=localStorage.getItem(LS)||''; }catch(e){}
+  if(saved){ PASS=saved; $('pass').value=saved; tryLogin(true); }
+  $('go').addEventListener('click',()=>tryLogin(false));
+  $('pass').addEventListener('keydown',e=>{ if(e.key==='Enter') tryLogin(false); });
+
+  function tryLogin(auto){
+    PASS=$('pass').value.trim(); if(!PASS){ $('pass').focus(); return; }
+    $('go').disabled=true; $('err').textContent='';
+    rpc('coach_ok').then(ok=>{
+      if(ok!==true){ $('go').disabled=false; if(!auto){$('err').textContent='Wrong password.'; try{localStorage.removeItem(LS);}catch(e){}} else { $('login').style.display='block'; } return; }
+      if($('remember').checked){ try{localStorage.setItem(LS,PASS);}catch(e){} }
+      loadAll();
+    }).catch(()=>{ $('go').disabled=false; $('err').textContent='Connection problem — check your keys.'; });
+  }
+  $('logout').addEventListener('click',()=>{ try{localStorage.removeItem(LS);}catch(e){}; location.reload(); });
+
+  function loadAll(){
+    Promise.all([rpc('coach_intake'),rpc('coach_logs'),rpc('coach_clients')]).then(([i,l,c])=>{
+      intake=Array.isArray(i)?i:[]; logs=Array.isArray(l)?l:[]; clients=Array.isArray(c)?c:[];
+      $('login').style.display='none'; $('app').style.display='block';
+      $('nLeads').textContent=intake.length; $('nClients').textContent=clients.length; $('nLogs').textContent=logs.length;
+      buildLeadCols(); renderLeads(); renderClients(); buildLogFilters(); renderLogs();
+    }).catch(()=>{ $('go').disabled=false; $('err').textContent='Could not load data.'; });
+  }
+
+  // ---------- helpers ----------
+  function flatten(row){ const f={}; const a=row.answers||{}; (a.groups||[]).forEach(g=>(g.items||[]).forEach(it=>{ if(it&&it.length>=2 && !(it[0] in f)) f[it[0]]=it[1]; })); return f; }
+  function groupsOf(row){ return (row.answers&&row.answers.groups)||[]; }
+  const fmtDate=s=>{ if(!s) return ''; const d=new Date(s); return isNaN(d)?String(s).slice(0,16):d.toLocaleDateString(undefined,{day:'numeric',month:'short',year:'2-digit'}); };
+  const fmtDT=s=>{ if(!s) return ''; const d=new Date(s); return isNaN(d)?String(s).slice(0,16):d.toLocaleDateString(undefined,{day:'numeric',month:'short'})+' '+d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'}); };
+
+  // ---------- LEADS ----------
+  function buildLeadCols(){ const seen=[]; intake.forEach(r=>{ groupsOf(r).forEach(g=>(g.items||[]).forEach(it=>{ if(it&&it.length&&seen.indexOf(it[0])<0) seen.push(it[0]); })); }); leadCols=seen; }
+  function leadRows(){
+    const q=$('leadSearch').value.trim().toLowerCase(); const fo=$('flagOnly').classList.contains('on');
+    return intake.filter(r=>{ if(fo && !r.flagged) return false;
+      if(!q) return true; const f=flatten(r); return (r.name+' '+r.contact+' '+Object.values(f).join(' ')).toLowerCase().indexOf(q)>=0; });
+  }
+  function renderLeads(){
+    const rows=leadRows();
+    $('leadCount').textContent=rows.length+' of '+intake.length;
+    if(!intake.length){ $('leadTable').innerHTML=''; $('leadTable').insertAdjacentHTML('beforebegin',''); $('leadTable').outerHTML='<table id="leadTable"></table>'; document.querySelector('#panel-leads .tablewrap').innerHTML='<div class="empty">No leads yet. Submissions from your onboarding form will appear here.</div>'; return; }
+    let h='<thead><tr><th>Date</th><th>Lang</th><th>⚠</th>'+leadCols.map(c=>'<th>'+esc(c)+'</th>').join('')+'</tr></thead><tbody>';
+    rows.forEach((r,idx)=>{ const f=flatten(r); const realIdx=intake.indexOf(r);
+      h+='<tr class="click" data-i="'+realIdx+'"><td>'+fmtDate(r.created_at)+'</td><td><span class="pill">'+esc(r.lang||'en')+'</span></td><td>'+(r.flagged?'<span class="flag">⚠</span>':'')+'</td>'+
+        leadCols.map(c=>'<td>'+fcell(f[c]||'')+'</td>').join('')+'</tr>';
+    });
+    h+='</tbody>';
+    document.querySelector('#panel-leads .tablewrap').innerHTML='<table id="leadTable">'+h+'</table>';
+    document.querySelectorAll('#leadTable tr.click').forEach(tr=>tr.addEventListener('click',()=>leadModal(+tr.dataset.i)));
+  }
+  function leadModal(i){
+    const r=intake[i]; if(!r) return; const dir=r.lang==='fa'?' class="fa"':'';
+    let h='<button class="x" id="mx">×</button><h2'+dir+'>'+fcell(r.name||'—')+'</h2>'+
+      '<div class="meta">'+fmtDT(r.created_at)+' · '+esc(r.contact||'')+' · '+esc(r.lang||'en')+(r.flagged?' · <span class="flag">⚠ medical clearance flagged</span>':'')+'</div>';
+    groupsOf(r).forEach(g=>{ h+='<div class="qgroup"><h3>'+fcell(g.label||'')+'</h3>';
+      (g.items||[]).forEach(it=>{ h+='<div class="qa"><div class="q">'+esc(it[0])+'</div><div class="a">'+fcell(it[1])+'</div></div>'; });
+      h+='</div>'; });
+    $('modal').innerHTML=h; $('overlay').classList.add('show');
+    $('mx').addEventListener('click',closeModal);
+  }
+  function closeModal(){ $('overlay').classList.remove('show'); }
+  $('overlay').addEventListener('click',e=>{ if(e.target===$('overlay')) closeModal(); });
+  $('leadSearch').addEventListener('input',renderLeads);
+  $('flagOnly').addEventListener('click',()=>{ $('flagOnly').classList.toggle('on'); renderLeads(); });
+
+  $('exportLeads').addEventListener('click',()=>{
+    const rows=leadRows(); const cols=['Date','Lang','Flagged'].concat(leadCols);
+    const q=s=>{ s=String(s==null?'':s); return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s; };
+    let csv=cols.map(q).join(',')+'\n';
+    rows.forEach(r=>{ const f=flatten(r);
+      const line=[fmtDate(r.created_at), r.lang||'en', r.flagged?'YES':''].concat(leadCols.map(c=>f[c]||''));
+      csv+=line.map(q).join(',')+'\n'; });
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+    const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download='fitsho-leads-'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
+  });
+
+  // ---------- CLIENTS ----------
+  function clientLink(c){ return PORTAL_URL+'?c='+encodeURIComponent(c.code||'')+(c.lang==='fa'?'&lang=fa':''); }
+  function renderClients(){
+    const q=$('clientSearch').value.trim().toLowerCase();
+    const rows=clients.filter(c=>!q || (c.name||'').toLowerCase().indexOf(q)>=0);
+    $('clientCount').textContent=rows.length+' of '+clients.length;
+    if(!clients.length){ document.querySelector('#panel-clients .tablewrap').innerHTML='<div class="empty">No clients yet. Add them in Supabase (leave code &amp; pin blank to auto-generate).</div>'; return; }
+    let h='<thead><tr><th>Name</th><th>Lang</th><th>Code</th><th>PIN</th><th>Link</th><th>Check-ins</th></tr></thead><tbody>';
+    rows.forEach(c=>{ const n=logs.filter(l=>l.client_code===c.code).length;
+      h+='<tr><td>'+fcell(c.name||'—')+'</td><td><span class="pill">'+esc(c.lang||'en')+'</span></td>'+
+        '<td class="mono">'+esc(c.code||'')+'</td><td class="mono">'+esc(c.pin||'')+'</td>'+
+        '<td><button class="copy" data-link="'+esc(clientLink(c))+'" data-pin="'+esc(c.pin||'')+'">copy link+PIN</button></td>'+
+        '<td><button class="copy" data-code="'+esc(c.code||'')+'" data-name="'+esc(c.name||'')+'">'+n+' ›</button></td></tr>';
+    });
+    h+='</tbody>';
+    document.querySelector('#panel-clients .tablewrap').innerHTML='<table>'+h+'</table>';
+    document.querySelectorAll('#panel-clients .copy[data-link]').forEach(b=>b.addEventListener('click',()=>{
+      const txt='Your plan: '+b.dataset.link+'\nYour PIN: '+b.dataset.pin;
+      navigator.clipboard.writeText(txt).then(()=>{ b.textContent='copied ✓'; b.classList.add('done'); setTimeout(()=>{b.textContent='copy link+PIN';b.classList.remove('done');},1500); });
+    }));
+    document.querySelectorAll('#panel-clients .copy[data-code]').forEach(b=>b.addEventListener('click',()=>clientModal(b.dataset.code,b.dataset.name)));
+  }
+  $('clientSearch').addEventListener('input',renderClients);
+
+  function clientModal(code,name){
+    const mine=logs.filter(l=>l.client_code===code);
+    const weights=mine.filter(l=>l.weight).map(l=>({t:new Date(l.created_at),w:parseFloat(l.weight)})).filter(x=>!isNaN(x.w)).sort((a,b)=>a.t-b.t);
+    let h='<button class="x" id="mx">×</button><h2>'+fcell(name)+'</h2><div class="meta">'+mine.length+' check-ins'+(weights.length?' · weight '+weights[0].w+' → '+weights[weights.length-1].w+' kg':'')+'</div>';
+    h+=spark(weights);
+    if(!mine.length) h+='<div class="sub">No check-ins logged yet.</div>';
+    mine.slice(0,40).forEach(l=>{ h+='<div class="qa"><div class="q">'+fmtDT(l.created_at)+'</div><div class="a">'+logSummary(l)+'</div></div>'; });
+    $('modal').innerHTML=h; $('overlay').classList.add('show'); $('mx').addEventListener('click',closeModal);
+  }
+  function spark(pts){
+    if(pts.length<2) return '';
+    const W=560,Hh=70,p=8; const ws=pts.map(x=>x.w); const mn=Math.min(...ws),mx=Math.max(...ws),rg=(mx-mn)||1;
+    const X=i=>p+i*(W-2*p)/(pts.length-1); const Y=w=>p+(1-(w-mn)/rg)*(Hh-2*p);
+    let d=pts.map((x,i)=>(i?'L':'M')+X(i).toFixed(1)+' '+Y(x.w).toFixed(1)).join(' ');
+    return '<svg class="spark" width="100%" viewBox="0 0 '+W+' '+Hh+'"><path d="'+d+'" fill="none" stroke="var(--amber)" stroke-width="2"/>'+
+      '<circle cx="'+X(pts.length-1)+'" cy="'+Y(ws[ws.length-1])+'" r="3" fill="var(--amber)"/></svg>';
+  }
+
+  // ---------- CHECK-INS ----------
+  function logSummary(l){
+    if(l.kind==='workout' || l.workout_log){ let s=''; if(l.session) s+='<b>'+fcell(l.session)+'</b> '; if(l.workout_log) s+=fcell(l.workout_log); if(l.effort) s+=' <span class="pill">'+esc(l.effort)+'</span>'; return s||'—'; }
+    const bits=[];
+    if(l.eating) bits.push('eating: '+fcell(l.eating));
+    if(l.weight) bits.push('weight: '+esc(l.weight)+'kg');
+    if(l.steps) bits.push('steps: '+esc(l.steps));
+    if(l.sleep) bits.push('sleep: '+esc(l.sleep));
+    if(l.what_happened) bits.push(fcell(l.what_happened));
+    if(l.note) bits.push('“'+fcell(l.note)+'”');
+    return bits.join(' · ')||'—';
+  }
+  function buildLogFilters(){
+    const names={}; logs.forEach(l=>{ if(l.client_code) names[l.client_code]=l.client_name||l.client_code; });
+    $('logClient').innerHTML='<option value="">All clients</option>'+Object.keys(names).map(c=>'<option value="'+esc(c)+'">'+esc(names[c])+'</option>').join('');
+  }
+  function renderLogs(){
+    const c=$('logClient').value, k=$('logKind').value;
+    const rows=logs.filter(l=>(!c||l.client_code===c) && (!k || (k==='workout'?(l.kind==='workout'||l.workout_log):(l.kind==='day'||(!l.workout_log&&l.kind!=='workout')))));
+    $('logCount').textContent=rows.length+' check-ins';
+    if(!logs.length){ document.querySelector('#panel-checkins .tablewrap').innerHTML='<div class="empty">No check-ins yet. They appear when clients log in their portal.</div>'; return; }
+    let h='<thead><tr><th>When</th><th>Client</th><th>Type</th><th>Logged</th></tr></thead><tbody>';
+    rows.slice(0,400).forEach(l=>{ const isW=(l.kind==='workout'||l.workout_log);
+      h+='<tr><td style="white-space:nowrap">'+fmtDT(l.created_at)+'</td><td>'+fcell(l.client_name||l.client_code||'')+'</td>'+
+        '<td><span class="kind '+(isW?'workout':'day')+'">'+(isW?'workout':'day')+'</span></td><td>'+logSummary(l)+'</td></tr>';
+    });
+    h+='</tbody>';
+    document.querySelector('#panel-checkins .tablewrap').innerHTML='<table>'+h+'</table>';
+  }
+  $('logClient').addEventListener('change',renderLogs);
+  $('logKind').addEventListener('change',renderLogs);
+
+  // ---------- TABS ----------
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('show'));
+    t.classList.add('active'); $('panel-'+t.dataset.p).classList.add('show');
+  }));
+})();
+</script>
+</body>
+</html>
