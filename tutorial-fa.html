@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>فیتشو — راهنمای استفاده از برنامه</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Lalezar&family=Vazirmatn:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E0C09;--surface:#16130D;--border:#2C271D;
+    --amber:#FFB020;--amber-soft:#FFC75A;--amber-dim:#7A5612;
+    --ink:#F3ECDD;--muted:#988D7C;--muted-2:#6A6253;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#000;color:var(--ink);font-family:'Vazirmatn',system-ui,sans-serif;
+    min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:18px;gap:14px;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--amber);color:#000}
+
+  .frame{width:100%;max-width:430px;aspect-ratio:4/5;background:var(--bg);border:1px solid var(--border);
+    border-radius:20px;overflow:hidden;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+  .track{display:flex;height:100%;transition:transform .4s cubic-bezier(.4,0,.2,1);direction:ltr}
+  .slide{min-width:100%;height:100%;padding:38px 32px 30px;display:flex;flex-direction:column;direction:rtl;text-align:right}
+  .slide .top{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .kicker{font-size:14px;letter-spacing:1px;color:var(--amber);font-weight:700;margin-bottom:16px}
+  h1{font-family:'Lalezar',sans-serif;font-weight:400;line-height:1.12;letter-spacing:0}
+  .hero{font-size:clamp(40px,12.5vw,56px)}
+  .head{font-size:clamp(30px,9vw,42px);margin-bottom:16px}
+  .head em,.hero em{color:var(--amber);font-style:normal}
+  p{font-size:17px;line-height:1.85;color:var(--muted)}
+  p b,p strong{color:var(--ink);font-weight:700}
+  .amberword{color:var(--amber);font-weight:700}
+  ul{list-style:none;margin-top:6px}
+  li{display:flex;gap:11px;font-size:16.5px;line-height:1.65;color:var(--ink);margin-bottom:13px;align-items:flex-start}
+  li .b{flex:0 0 auto;color:var(--amber);font-weight:700}
+  li .n{flex:0 0 26px;font-family:'Lalezar',sans-serif;color:var(--amber);font-size:20px;line-height:1.1}
+  li b{font-weight:700}
+  .tabline{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .tabemoji{font-size:24px;flex:0 0 auto}
+  .tabline b{font-size:18px;color:var(--ink);font-weight:700}
+  .tabline span{color:var(--muted);font-size:15px}
+
+  .foot{display:flex;align-items:center;gap:12px;margin-top:18px}
+  .mark{font-family:'Anton',sans-serif;font-size:15px;letter-spacing:.5px;text-transform:uppercase;direction:ltr}
+  .mark b{color:var(--amber)}
+  .ig{color:var(--amber);text-decoration:none;font-weight:600;font-size:13.5px;position:relative;z-index:6;direction:ltr}
+  .ig:hover{text-decoration:underline}
+  .hint{color:var(--muted-2);font-size:13px;letter-spacing:.5px;margin-top:14px}
+
+  .tap{position:absolute;top:0;bottom:0;width:38%;z-index:5;cursor:pointer}
+  .tap.l{left:0}.tap.r{right:0}
+  .dots{display:flex;gap:7px;justify-content:center;direction:ltr}
+  .dots i{width:7px;height:7px;border-radius:50%;background:#333;cursor:pointer;transition:.2s}
+  .dots i.on{background:var(--amber);width:20px;border-radius:99px}
+  .meta{color:var(--muted-2);font-size:12px;letter-spacing:1px;text-align:center;direction:ltr}
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="track" id="track">
+
+    <!-- 1 COVER -->
+    <div class="slide">
+      <div class="top">
+        <a class="mark" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener" style="margin-bottom:auto;text-decoration:none;color:inherit;position:relative;z-index:6"><b>FITSHO</b> WITH ALI</a>
+        <h1 class="hero">برنامه‌ات<br><em>آماده</em> است.</h1>
+        <p style="margin-top:16px">هرچی برای استفاده ازش لازم داری همین‌جاست — حدود دو دقیقه وقت می‌بره. یه بار ورق بزن، تمومه.</p>
+        <div class="hint">برای شروع ورق بزن</div>
+      </div>
+    </div>
+
+    <!-- 2 LOGIN -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۱ · ورود</div>
+        <h1 class="head">یک لینک،<br>یک <em>رمز ورود</em>.</h1>
+        <p>یک <b>لینک</b> شخصی و یک <b>رمز ورود ۶ رقمی</b> برات فرستادم. لینک رو باز کن، رمزت رو وارد کن .</p>
+        <p style="margin-top:12px"><b>نکته:</b> لینک رو به صفحه‌ی اصلی گوشیت اضافه کن — بعدش مثل یه اپ با یه کلیک باز می‌شه.</p>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 3 TABS -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۲ · صفحه‌ی تو</div>
+        <h1 class="head">سه <em>بخش</em>.</h1>
+        <div class="tabline"><span class="tabemoji">🍽</span><div><b>غذا</b> &nbsp;<span>برنامه‌ی تغذیه‌ات</span></div></div>
+        <div class="tabline"><span class="tabemoji">🏋</span><div><b>تمرین</b> &nbsp;<span>برنامه‌ی تمرینیت</span></div></div>
+        <div class="tabline"><span class="tabemoji">✅</span><div><b>امروز</b> &nbsp;<span>جایی که داده های‌ امروزتو  ثبت می‌کنی</span></div></div>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 4 FOOD -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۳ · غذای تو</div>
+        <h1 class="head">امروز چی   <em>خوردی؟</em></h1>
+        <ul>
+          <li><span class="b">←</span><div>دو نوع روز: <b>روز تمرین</b> و <b>روز استراحت</b>. درستش رو انتخاب کن.</div></li>
+          <li><span class="b">←</span><div>هر وعده <b>غذای دقیق و گرمش</b> رو نشون می‌ده. روی <span class="amberword">از کجا بخرم</span> بزن.</div></li>
+          <li><span class="b">←</span><div><b>پروتئین در اولویته</b> — اول اون رو کامل کن، بقیه رو دورش بچین.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 5 TRAINING -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۴ · تمرین تو</div>
+        <h1 class="head">تو باشگاه  <em>چیکار کردی؟</em></h1>
+        <ul>
+          <li><span class="b">←</span><div>هر روز حرکات رو به‌صورت <b>ست × تکرار</b> نشون می‌ده.</div></li>
+          <li><span class="b">←</span><div><b>RIR</b> یعنی تکرارِ ذخیره — چند تا ته توان داری. ۲ یعنی حدود ۲ تکرار مونده به ناتوانی .</div></li>
+          <li><span class="b">←</span><div>حرکت رو بلد نیستی؟ روی <span class="amberword">آموزش</span> بزن. همیشه اول ۵ تا ۱۰ دقیقه گرم کن.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 6 LOG WORKOUT -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۵ · بعد از هر تمرین</div>
+        <h1 class="head">تمرینت رو <em>ثبت کن</em>.</h1>
+        <ul>
+          <li><span class="n">۱</span><div>بخشِ <b>امروز ← تمرین</b> رو باز کن.</div></li>
+          <li><span class="n">۲</span><div>روزی که <b>تمرین کردی</b> رو بزن.</div></li>
+          <li><span class="n">۳</span><div>برای هر ست، <b>وزن و تکراری</b> که واقعاً زدی رو وارد کن.</div></li>
+          <li><span class="n">۴</span><div>روی <span class="amberword">ثبت تمرین</span> بزن — تو باشگاه، تا یادت نرفته.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 7 LOG DAY -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۶ · هر شب</div>
+        <h1 class="head">روزت رو <em>ثبت کن</em>.</h1>
+        <p>بخشِ <b>امروز ← روز من</b> رو باز کن و بهم بگو: غذا چطور پیش رفت، <b>وزنت</b>، <b>خوابت</b>، و یه یادداشت.</p>
+        <p style="margin-top:14px">۳۰ ثانیه طول می‌کشه. تمرین و غذا رو <b>جدا</b> ثبت می‌کنی — تمرین هر وقت تمرین کردی، </p>
+        <p style="margin-top:14px;color:var(--amber-soft)"><b>صداقت از کمال مهم‌تره.</b></p>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 8 RULES -->
+    <div class="slide">
+      <div class="top">
+        <div class="kicker">۰۷ · ۵ قانون</div>
+        <h1 class="head">تا <em>جواب بده</em>.</h1>
+        <ul>
+          <li><span class="n">۱</span><div>صبح وزن کن، بعدِ دستشویی، قبلِ خوردن.</div></li>
+          <li><span class="n">۲</span><div><b>هر روز ثبت کن</b> — ثبات همه‌چیزه.</div></li>
+          <li><span class="n">۳</span><div><b>صادق باش.</b> من با داده‌ی واقعی کار می‌کنم، نه روزِ بی‌نقص.</div></li>
+          <li><span class="n">۴</span><div><b>اول پروتئین</b>، بقیه دورش.</div></li>
+          <li><span class="n">۵</span><div>سخته؟ <b>برام یادداشت بذار.</b> من برای همینم.</div></li>
+        </ul>
+      </div>
+      <div class="foot"><a class="ig" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener">@fitsho_with_ali</a></div>
+    </div>
+
+    <!-- 9 CLOSE -->
+    <div class="slide">
+      <div class="top">
+        <a class="mark" href="https://instagram.com/fitsho_with_ali" target="_blank" rel="noopener" style="margin-bottom:auto;text-decoration:none;color:inherit;position:relative;z-index:6"><b>FITSHO</b> WITH ALI</a>
+        <h1 class="hero"><em>همین</em>.</h1>
+        <p style="margin-top:16px">حاضر شو و ثبت کن. بقیه‌ش با من — برنامه، تنظیمات، پیگیری.</p>
+        <p style="margin-top:14px;color:var(--ink);font-weight:700">بیا یه چیزِ واقعی بسازیم. — علی</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="tap l" id="prev"></div>
+  <div class="tap r" id="next"></div>
+</div>
+
+<div class="dots" id="dots"></div>
+<div class="meta" id="counter"></div>
+
+<script>
+(function(){
+  const track=document.getElementById('track');
+  const slides=track.children.length;
+  const dotsWrap=document.getElementById('dots');
+  const counter=document.getElementById('counter');
+  const fa=n=>String(n).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+  let i=0;
+  for(let n=0;n<slides;n++){ const d=document.createElement('i'); d.addEventListener('click',()=>go(n)); dotsWrap.appendChild(d); }
+  const dots=[...dotsWrap.children];
+  function go(n){ i=Math.max(0,Math.min(slides-1,n)); track.style.transform='translateX('+(-i*100)+'%)';
+    dots.forEach((d,x)=>d.classList.toggle('on',x===i)); counter.textContent=fa(i+1)+' / '+fa(slides); }
+  document.getElementById('next').addEventListener('click',()=>go(i+1));
+  document.getElementById('prev').addEventListener('click',()=>go(i-1));
+  document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight')go(i+1); if(e.key==='ArrowLeft')go(i-1); });
+  let x0=null;
+  track.addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
+  track.addEventListener('touchend',e=>{ if(x0===null)return; const dx=e.changedTouches[0].clientX-x0;
+    if(Math.abs(dx)>40){ go(dx<0?i+1:i-1); } x0=null; });
+  go(0);
+})();
+</script>
+</body>
+</html>
